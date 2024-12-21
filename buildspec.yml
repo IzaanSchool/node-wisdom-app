@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo Installing dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Building Docker image...
+      - $(aws ecr get-login-password --region us-east-1) | docker login --username AWS --password-stdin 666680140343.dkr.ecr.us-east-1.amazonaws.com
+      - docker build -t node-wisdom-app .
+      - docker tag node-wisdom-app:latest 666680140343.dkr.ecr.us-east-1.amazonaws.com/node-wisdom-app:latest
+      - docker push 666680140343.dkr.ecr.us-east-1.amazonaws.com/node-wisdom-app:latest
+artifacts:
+  files:
+    - app.js
+    - package.json
+    - Dockerfile
+    - buildspec.yml
